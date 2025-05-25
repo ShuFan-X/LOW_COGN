@@ -15,7 +15,7 @@ x_test_AFT = df2[['Age', 'Race_non-hispanic black', 'Marital_married or living w
 x_test_DSST = df2[['Age', 'Race_non-hispanic black', 'PIR', 'Education_level', 'CVD', 'CR']]
 
 model_CERAD = joblib.load('CERAD_MLP.pkl')
-model_AFT = joblib.load('AFT_LGBM.pkl')
+#model_AFT = joblib.load('AFT_LGBM.pkl')
 model_DSST = joblib.load('DSST_MLP.pkl')
 
 

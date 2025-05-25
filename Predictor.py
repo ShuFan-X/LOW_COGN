@@ -118,7 +118,6 @@ if st.button("Predict"):
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
     # 如果预测类别为1（高风险）
-    print(probability)
     if predicted_class == 1:
         advice = (
             f"According to our model, you have a high risk of LOW_CERAD. "
@@ -171,12 +170,11 @@ if st.button("Predict"):
     #predicted_class = model_AFT.predict(features_AFT)[0]
     #predicted_proba = model_AFT.predict_proba(features_AFT)[0]
     raw_scores = model_AFT.predict(features_AFT)  # 返回 [0, 1] 的概率值
-    predicted_proba = np.vstack([1 - raw_scores, raw_scores]).T  # 转为 [[p0, p1], ...]
-    predicted_class = (raw_scores > 0.5).astype(int)  # 阈值 0.5
+    predicted_proba = np.vstack([1 - raw_scores, raw_scores]).T[0]  # 转为 [[p0, p1], ...]
+    predicted_class = (raw_scores > 0.5).astype(int)[0]  # 阈值 0.5
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_AFT, 1: LOW_AFT)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
-    print(probability)
     # 如果预测类别为1（高风险）
     if predicted_class == 1:
         advice = (

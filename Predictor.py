@@ -167,8 +167,11 @@ if st.button("Predict"):
     lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
     st.components.v1.html(lime_html, height=800, scrolling=True)
     ##########  AFT  ####################
-    predicted_class = model_AFT.predict(features_AFT)[0]
-    predicted_proba = model_AFT.predict_proba(features_AFT)[0]
+    #predicted_class = model_AFT.predict(features_AFT)[0]
+    #predicted_proba = model_AFT.predict_proba(features_AFT)[0]
+    raw_scores = model_AFT.predict(features_AFT)  # 返回 [0, 1] 的概率值
+    predicted_proba = np.vstack([1 - raw_scores, raw_scores]).T  # 转为 [[p0, p1], ...]
+    predicted_class = (raw_scores > 0.5).astype(int)  # 阈值 0.5
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_AFT, 1: LOW_AFT)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100

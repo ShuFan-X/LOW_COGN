@@ -112,6 +112,7 @@ features_DSST = np.array([feature_values_DSST])
 
 if st.button("Predict"):
     ##########  CERAD  ####################
+    st.title("Diagnosis of LOW_CERAD")
     predicted_class = model_CERAD.predict(features_CERAD)[0]
     predicted_proba = model_CERAD.predict_proba(features_CERAD)[0]
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_CERAD, 1: LOW_CERAD)")
@@ -167,6 +168,7 @@ if st.button("Predict"):
     lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
     st.components.v1.html(lime_html, height=800, scrolling=True)
     ##########  AFT  ####################
+    st.title("Diagnosis of LOW_AFT")
     #predicted_class = model_AFT.predict(features_AFT)[0]
     #predicted_proba = model_AFT.predict_proba(features_AFT)[0]
     raw_scores = model_AFT.predict(features_AFT)  # 返回 [0, 1] 的概率值
@@ -227,6 +229,7 @@ if st.button("Predict"):
     lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
     st.components.v1.html(lime_html, height=800, scrolling=True)
     ##########  DSST  ####################
+    st.title("Diagnosis of LOW_DSST")
     predicted_class = model_DSST.predict(features_DSST)[0]
     predicted_proba = model_DSST.predict_proba(features_DSST)[0]
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_DSST, 1: LOW_DSST)")

@@ -194,7 +194,7 @@ if st.button("Predict"):
     st.write(advice)
     # SHAP 解释
     st.subheader("SHAP Force Plot Explanation")
-    explainer_shap = shap.TreeExplainer(model_AFT)
+    explainer_shap = shap.KernelExplainer(model_AFT.predict, data=x_test_AFT)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values_AFT], columns=feature_names_AFT))
     if predicted_class == 1:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_AFT], columns=feature_names_AFT), matplotlib=True)

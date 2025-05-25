@@ -115,7 +115,7 @@ if st.button("Predict"):
     ##########  CERAD  ####################
     predicted_class = model_CERAD.predict(features_CERAD)[0]
     predicted_proba = model_CERAD.predict_proba(features_CERAD)[0]
-    st.write(f"**Predicted Class:** {predicted_class} (1: LOW_CERAD, 0: HIGH_CERAD)")
+    st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_CERAD, 1: LOW_CERAD)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
     # 如果预测类别为1（高风险）
@@ -170,7 +170,7 @@ if st.button("Predict"):
     ##########  AFT  ####################
     predicted_class = model_AFT.predict(features_AFT)[0]
     predicted_proba = model_AFT.predict_proba(features_AFT)[0]
-    st.write(f"**Predicted Class:** {predicted_class} (1: LOW_AFT, 0: HIGH_AFT)")
+    st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_AFT, 1: LOW_AFT)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
     # 如果预测类别为1（高风险）
@@ -224,7 +224,7 @@ if st.button("Predict"):
     ##########  DSST  ####################
     predicted_class = model_DSST.predict(features_DSST)[0]
     predicted_proba = model_DSST.predict_proba(features_DSST)[0]
-    st.write(f"**Predicted Class:** {predicted_class} (1: LOW_DSST, 0: HIGH_DSST)")
+    st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_DSST, 1: LOW_DSST)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
     # 如果预测类别为1（高风险）

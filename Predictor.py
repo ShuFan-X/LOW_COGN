@@ -3,7 +3,6 @@ import joblib
 import numpy as np
 import pandas as pd
 import shap
-import xgboost
 import matplotlib.pyplot as plt
 from lime.lime_tabular import LimeTabularExplainer
 

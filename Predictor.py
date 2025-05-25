@@ -213,11 +213,14 @@ if st.button("Predict"):
         class_names=['HIGH_AFT', 'LOW_AFT'],  # Adjust class names to match your classification task
         mode='classification'
     )
-
+    def booster_predict_proba(self, X):
+        raw_pred = self.predict(X)
+        return np.vstack([1 - raw_pred, raw_pred]).T
+    
     # Explain the instance
     lime_exp = lime_explainer.explain_instance(
         data_row=features_AFT.flatten(),
-        predict_fn=model_AFT.predict_proba
+        predict_fn=booster_predict_proba.__get__(model_AFT)
     )
 
     # Display the LIME explanation without the feature value table

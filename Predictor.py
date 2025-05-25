@@ -109,7 +109,7 @@ feature_values_DSST = [Age, Race, PIR, Education_level, CVD, CR ]
 features_CERAD = np.array([feature_values_CERAD])
 features_AFT = np.array([feature_values_AFT])
 features_DSST = np.array([feature_values_DSST])
-
+features_AFT = features_AFT.reshape(1, -1)
 
 if st.button("Predict"):
     ##########  CERAD  ####################

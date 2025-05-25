@@ -15,7 +15,7 @@ x_test_AFT = df2[['Age', 'Race_non-hispanic black', 'Marital_married or living w
 x_test_DSST = df2[['Age', 'Race_non-hispanic black', 'PIR', 'Education_level', 'CVD', 'CR']]
 
 model_CERAD = joblib.load('CERAD_MLP.pkl')
-#model_AFT = joblib.load('AFT_LGBM.pkl')
+model_AFT = Booster(model_file='AFT_LGBM.txt')
 model_DSST = joblib.load('DSST_MLP.pkl')
 
 
@@ -109,7 +109,6 @@ feature_values_DSST = [Age, Race, PIR, Education_level, CVD, CR ]
 features_CERAD = np.array([feature_values_CERAD])
 features_AFT = np.array([feature_values_AFT])
 features_DSST = np.array([feature_values_DSST])
-features_AFT = features_AFT.reshape(1, -1)
 
 if st.button("Predict"):
     ##########  CERAD  ####################

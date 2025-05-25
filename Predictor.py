@@ -12,28 +12,15 @@ df2 = pd.read_csv('x_test.csv')
 x_test_CERAD = df2[['Age', 'Marital_married or living with a partner', 'PIR1', 'Education_level', 'BMI1', 'Smoking', 'Hyperlipidemia', 'LC9', 'PLT', 'CR']]
 x_test_AFT = df2[['Age', 'Race_non-hispanic black', 'Marital_married or living with a partner', 'PIR1', 'Education_level', 'BMI1', 'Alcohol', 'Smoking', 'Hyperlipidemia', 'LC9', 'TC', 'CR']]
 x_test_DSST = df2[['Age', 'Race_non-hispanic black', 'PIR', 'Education_level', 'CVD', 'CR']]
-x_tests = {
-    x_test_CERAD
-    x_test_AFT
-    x_test_DSST
-}
+
 model_CERAD = joblib.load('CERAD_MLP.pkl')
 model_AFT = joblib.load('AFT_LGBM.pkl')
 model_DSST = joblib.load('DSST_MLP.pkl')
-Models = {
-    joblib.load('CERAD_MLP.pkl'),
-    joblib.load('AFT_LGBM.pkl'),
-    joblib.load('DSST_MLP.pkl')
-}
+
 
 feature_names_CERAD = ['Age', 'Marital_married or living with a partner', 'PIR1', 'Education_level', 'BMI1', 'Smoking', 'Hyperlipidemia', 'LC9', 'PLT', 'CR']
 feature_names_AFT = ['Age', 'Race_non-hispanic black', 'Marital_married or living with a partner', 'PIR1', 'Education_level', 'BMI1', 'Alcohol', 'Smoking', 'Hyperlipidemia', 'LC9', 'TC', 'CR']
 feature_names_DSST = ['Age', 'Race_non-hispanic black', 'PIR', 'Education_level', 'CVD', 'CR']
-feature_nameses = {
-    feature_names_CERAD,
-    feature_names_AFT,
-    feature_names_DSST
-}
 
 # 设置 Streamlit 应用的标题
 st.title("Low cognitive performance diagnostic model")
@@ -60,7 +47,7 @@ HDL = st.number_input("HDL", min_value=0, max_value=250, value=1)
 LDL = st.number_input("LDL", min_value=0, max_value=250, value=1)
 PLT = st.number_input("PLT", min_value=0, max_value=250, value=1)
 CR = st.number_input("CR", min_value=0, max_value=250, value=1)
-PHQ-9 = st.selectbox("PHQ-9", options=[100, 70, 30, 0], format_func=lambda x: ("the score of 0 to 4 points" if x == 100 else "the score of 5 to 9 points" if x == 70 else "the score of 10 to 14 points" if x == 30 else "the score of 15 to 27 points" if x == 0 else ""  ))
+PHQ_9 = st.selectbox("PHQ-9", options=[100, 70, 30, 0], format_func=lambda x: ("the score of 0 to 4 points" if x == 100 else "the score of 5 to 9 points" if x == 70 else "the score of 10 to 14 points" if x == 30 else "the score of 15 to 27 points" if x == 0 else ""  ))
 Diet_score = st.selectbox("Healthy Eating Index-2015 diet score", options=[100, 80, 50, 25, 0], format_func=lambda x: ("≥95 percentile (top/ideal diet)" if x == 100 else "75 – 94 percentile" if x == 80 else "50 – 74 percentile" if x == 50 else "25 – 49 percentile" if x == 25 else "1 – 24 percentile (bottom/least ideal quartile" if x == 0 else ""  ))
 
 if Nicotin_exposure == 100:
@@ -106,14 +93,14 @@ elif 190 <= Non_HDL <= 219:
 else:
     Blood_lipids = 0
 
-Hyperlipidemia = (
+Hyperlipidemia = int(
     (TG >= 150) or 
     (TC >= 200) or 
     (LDL >= 130) or 
     ((Gender == 1 and HDL < 40) or (Gender == 0 and HDL < 50))
 )
 
-LC9 = [PHQ-9 + Diet_score + Physical_activity + Nicotin_exposure + Sleep_health + BMI_score + Blood_lipids + Blood_glucose + Blood_pressure]/9
+LC9 = (PHQ_9 + Diet_score + Physical_activity + Nicotin_exposure + Sleep_health + BMI_score + Blood_lipids + Blood_glucose + Blood_pressure)/9
 
 feature_values_CERAD = [Age, Marital_status, PIR1, Education_level, BMI1, Smoking, Hyperlipidemia, LC9, PLT, CR ]
 feature_values_AFT = [Age, Race, Marital_status, PIR1, Education_level, BMI1, Alcohol, Smoking, Hyperlipidemia, LC9, TC, CR ]
@@ -122,12 +109,11 @@ features_CERAD = np.array([feature_values_CERAD])
 features_AFT = np.array([feature_values_AFT])
 features_DSST = np.array([feature_values_DSST])
 
-feature_valueses = {feature_values_CERAD, feature_values_AFT, feature_values_DSST}
-featureses = {features_CERAD, features_AFT, features_DSST}
+
 if st.button("Predict"):
     ##########  CERAD  ####################
-    predicted_class = model_CERAD.predict(features)[0]
-    predicted_proba = model_CERAD.predict_proba(features)[0]
+    predicted_class = model_CERAD.predict(features_CERAD)[0]
+    predicted_proba = model_CERAD.predict_proba(features_CERAD)[0]
     st.write(f"**Predicted Class:** {predicted_class} (1: LOW_CERAD, 0: HIGH_CERAD)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
@@ -135,7 +121,7 @@ if st.button("Predict"):
     if predicted_class == 1:
         advice = (
             f"According to our model, you have a high risk of LOW_CERAD. "
-            f"The model predicts that your probability of having LOW_CERAD is (probability:.1f)%."
+            f"The model predicts that your probability of having LOW_CERAD is {probability:.1f}%."
             "It's advised to consult with your healthcare provider for further evaluation and possible intervention."
         )
 
@@ -143,15 +129,15 @@ if st.button("Predict"):
     else:
         advice = (
             f"According to our model, you have a low risk of  LOW_CERAD. "
-            f"The model predicts that your probability of not having LOW_CERAD is (probability:.1f)%."
+            f"The model predicts that your probability of not having LOW_CERAD is {probability:.1f}%."
             "However, maintaining a healthy lifestyle is important. Please continue regular check-ups with your healthcare provider."
         )
     # 显示建议
     st.write(advice)
     # SHAP 解释
     st.subheader("SHAP Force Plot Explanation")
-    #explainer_shap = shap.TreeExplainer(model_CERAD)
-    explainer_shap = shap.KernelExplainer(model_CERAD.predict, data=pd.DataFrame([feature_values_CERAD], columns=feature_names_CERAD))
+
+    explainer_shap = shap.KernelExplainer(model_CERAD.predict, data=x_test_CERAD)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values_CERAD], columns=feature_names_CERAD))
     if predicted_class == 1:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_CERAD], columns=feature_names_CERAD), matplotlib=True)
@@ -159,8 +145,8 @@ if st.button("Predict"):
     else:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_CERAD], columns=feature_names_CERAD), matplotlib=True)
 
-    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
-    st.image("shap_force_plot.png", caption='SHAP Force Plot Explanation')
+    plt.savefig("shap_force_plot_CERAD.png", bbox_inches='tight', dpi=1200)
+    st.image("shap_force_plot_CERAD.png", caption='SHAP Force Plot Explanation')
 
     # LIME Explanation
     st.subheader("LIME Explanation")
@@ -181,8 +167,8 @@ if st.button("Predict"):
     lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
     st.components.v1.html(lime_html, height=800, scrolling=True)
     ##########  AFT  ####################
-    predicted_class = model_AFT.predict(features)[0]
-    predicted_proba = model_AFT.predict_proba(features)[0]
+    predicted_class = model_AFT.predict(features_AFT)[0]
+    predicted_proba = model_AFT.predict_proba(features_AFT)[0]
     st.write(f"**Predicted Class:** {predicted_class} (1: LOW_AFT, 0: HIGH_AFT)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
@@ -190,7 +176,7 @@ if st.button("Predict"):
     if predicted_class == 1:
         advice = (
             f"According to our model, you have a high risk of LOW_AFT. "
-            f"The model predicts that your probability of having LOW_AFT is (probability:.1f)%."
+            f"The model predicts that your probability of having LOW_AFT is {probability:.1f}%."
             "It's advised to consult with your healthcare provider for further evaluation and possible intervention."
         )
 
@@ -198,7 +184,7 @@ if st.button("Predict"):
     else:
         advice = (
             f"According to our model, you have a low risk of  LOW_AFT. "
-            f"The model predicts that your probability of not having LOW_AFT is (probability:.1f)%."
+            f"The model predicts that your probability of not having LOW_AFT is {probability:.1f}%."
             "However, maintaining a healthy lifestyle is important. Please continue regular check-ups with your healthcare provider."
         )
     # 显示建议
@@ -213,8 +199,8 @@ if st.button("Predict"):
     else:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_AFT], columns=feature_names_AFT), matplotlib=True)
 
-    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
-    st.image("shap_force_plot.png", caption='SHAP Force Plot Explanation')
+    plt.savefig("shap_force_plot_AFT.png", bbox_inches='tight', dpi=1200)
+    st.image("shap_force_plot_AFT.png", caption='SHAP Force Plot Explanation')
 
     # LIME Explanation
     st.subheader("LIME Explanation")
@@ -235,8 +221,8 @@ if st.button("Predict"):
     lime_html = lime_exp.as_html(show_table=False)  # Disable feature value table
     st.components.v1.html(lime_html, height=800, scrolling=True)
     ##########  DSST  ####################
-    predicted_class = model_DSST.predict(features)[0]
-    predicted_proba = model_DSST.predict_proba(features)[0]
+    predicted_class = model_DSST.predict(features_DSST)[0]
+    predicted_proba = model_DSST.predict_proba(features_DSST)[0]
     st.write(f"**Predicted Class:** {predicted_class} (1: LOW_DSST, 0: HIGH_DSST)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
@@ -244,7 +230,7 @@ if st.button("Predict"):
     if predicted_class == 1:
         advice = (
             f"According to our model, you have a high risk of LOW_DSST. "
-            f"The model predicts that your probability of having LOW_DSST is (probability:.1f)%."
+            f"The model predicts that your probability of having LOW_DSST is {probability:.1f}%."
             "It's advised to consult with your healthcare provider for further evaluation and possible intervention."
         )
 
@@ -252,15 +238,15 @@ if st.button("Predict"):
     else:
         advice = (
             f"According to our model, you have a low risk of  LOW_DSST. "
-            f"The model predicts that your probability of not having LOW_DSST is (probability:.1f)%."
+            f"The model predicts that your probability of not having LOW_DSST is {probability:.1f}%."
             "However, maintaining a healthy lifestyle is important. Please continue regular check-ups with your healthcare provider."
         )
     # 显示建议
     st.write(advice)
     # SHAP 解释
     st.subheader("SHAP Force Plot Explanation")
-    #explainer_shap = shap.TreeExplainer(model_DSST)
-    explainer_shap = shap.KernelExplainer(model_DSST.predict, data=pd.DataFrame([feature_values_DSST], columns=feature_names_DSST))
+
+    explainer_shap = shap.KernelExplainer(model_DSST.predict, data=x_test_DSST)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values_DSST], columns=feature_names_DSST))
     if predicted_class == 1:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_DSST], columns=feature_names_DSST), matplotlib=True)
@@ -268,14 +254,14 @@ if st.button("Predict"):
     else:
         shap.force_plot(explainer_shap.expected_value, shap_values[0], pd.DataFrame([feature_values_DSST], columns=feature_names_DSST), matplotlib=True)
 
-    plt.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
-    st.image("shap_force_plot.png", caption='SHAP Force Plot Explanation')
+    plt.savefig("shap_force_plot_DSST.png", bbox_inches='tight', dpi=1200)
+    st.image("shap_force_plot_DSST.png", caption='SHAP Force Plot Explanation')
 
     # LIME Explanation
     st.subheader("LIME Explanation")
     lime_explainer = LimeTabularExplainer(
-        training_data=x_test_AFT.values,
-        feature_names=x_test_AFT.columns.tolist(),
+        training_data=x_test_DSST.values,
+        feature_names=x_test_DSST.columns.tolist(),
         class_names=['HIGH_DSST', 'LOW_DSST'],  # Adjust class names to match your classification task
         mode='classification'
     )

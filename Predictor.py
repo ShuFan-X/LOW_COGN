@@ -117,6 +117,7 @@ if st.button("Predict"):
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_CERAD, 1: LOW_CERAD)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
+    print(probability)
     # 如果预测类别为1（高风险）
     if predicted_class == 1:
         advice = (
@@ -175,6 +176,7 @@ if st.button("Predict"):
     st.write(f"**Predicted Class:** {predicted_class} (0: HIGH_AFT, 1: LOW_AFT)")
     st.write(f"**Predicted Probabilities:** {predicted_proba}")
     probability = predicted_proba[predicted_class] * 100
+    print(probability)
     # 如果预测类别为1（高风险）
     if predicted_class == 1:
         advice = (

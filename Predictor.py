@@ -27,7 +27,7 @@ feature_names_DSST = ['Age', 'Race_non-hispanic black', 'PIR', 'Education_level'
 st.title("Low cognitive performance diagnostic model")
 st.sidebar.header("Selection Panel")  # 则边栏的标题
 st.sidebar.subheader("Picking up paraneters")
-Age = st.number_input("Age", min_value=0, max_value=120, value=50.0)
+Age = st.number_input("Age", min_value=0, max_value=120, value=50)
 Gender = st.selectbox("Gender", options=[0, 1], format_func=lambda x:"Male"if x == 1 else "Female")
 Height = st.number_input("Height(cm)", min_value=0.0, max_value=250.0, value=150.0, step=0.1)
 Weight = st.number_input("Weight(kg)", min_value=0.0, max_value=150.0, value=60.0, step=0.1)
